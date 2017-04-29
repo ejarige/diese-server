@@ -6,7 +6,7 @@ try {
     $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pwd);
 
     $query = $pdo->prepare(
-        "SELECT eventful_id, alias FROM categories"
+        "SELECT * FROM categories ORDER BY alias ASC"
     );
 
     $query->execute();

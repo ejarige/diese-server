@@ -18,6 +18,14 @@ if(isset($_POST['keywords']) && $_POST['keywords'])
     $params['keywords'] = urlencode($_POST['keywords']);
 
 
+if(isset($_POST['within']) && $_POST['within'])
+    $params['within'] = urlencode($_POST['within']);
+
+
+if(isset($_POST['category']) && $_POST['category'])
+    $params['category'] = urlencode($_POST['category']);
+
+
 if(isset($_POST['page']) && $_POST['page'])
     $params['page_number'] = urlencode($_POST['page']);
 
