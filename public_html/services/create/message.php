@@ -18,9 +18,12 @@ if(
         foreach($_POST as $k=>&$v)
             $add->bindParam(":$k", $v);
 
-        $add->bindParam(":date", time());
+        $time = time()*1000;
+        $add->bindParam(":date", $time);
 
         $add->execute();
+
+        echo $pdo->lastInsertId();
 
         http_response_code(200);
 

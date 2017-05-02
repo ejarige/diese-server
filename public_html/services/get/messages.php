@@ -12,7 +12,8 @@ if(
             "SELECT msg.id, sender_id, date, text, avatar, login
              FROM msg
              LEFT JOIN users ON msg.sender_id = users.id
-             AND msg.conversation_id = :conv_id"
+             WHERE msg.conversation_id = :conv_id
+             ORDER BY date ASC"
         );
 
         $msg->bindParam(':conv_id', $_POST["conv_id"]);

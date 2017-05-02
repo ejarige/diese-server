@@ -12,7 +12,7 @@ if(
         $convs = $pdo->prepare(
             "SELECT msg_conv.id, msg_conv.concert_id, msg_conv.open, msg_conv.name
              FROM msg_conv_users
-             LEFT JOIN msg_conv ON msg_conv.id = msg_conv_users.conv_id
+             INNER JOIN msg_conv ON msg_conv.id = msg_conv_users.conv_id
              AND msg_conv_users.user_id = :user_id"
         );
 
@@ -23,14 +23,14 @@ if(
 
         // users
         $users = $pdo->prepare(
-            "SELECT users.id, users.avatar, users.login, msg_conv.privilege
+            "SELECT users.id, users.avatar, users.login, msg_conv_users.privilege
              FROM msg_conv_users
-             LEFT JOIN users ON msg_conv_users.user_id = users.id
-             AND msg_conv_users.conv_id = :conv_id"
+             INNER JOIN users ON msg_conv_users.user_id = users.id
+             WHERE msg_conv_users.conv_id = :conv_id"
         );
 
-        foreach($res as $conv){
-            $users->execute(array(":conv_id", $conv['id']));
+        foreach($res as &$conv){
+            $users->execute(array(":conv_id" => $conv['id']));
             $conv['users'] = $users->fetchAll(PDO::FETCH_ASSOC);
         }
 
@@ -41,8 +41,8 @@ if(
              ORDER BY date DESC LIMIT 1"
         );
 
-        foreach($res as $conv){
-            $msg->execute(array(":conv_id", $conv['id']))['text'];
+        foreach($res as &$conv){
+            $msg->execute(array(":conv_id" => $conv['id']))['text'];
             $conv['lastmessage'] = $msg->fetchAll(PDO::FETCH_ASSOC);
         }
 
