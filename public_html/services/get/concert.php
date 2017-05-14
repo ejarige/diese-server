@@ -21,7 +21,20 @@ if(isset($_POST["concert_id"]) && $_POST["concert_id"]
 
     try {
         $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pwd);
-        // check if user is on wainting list
+
+        // check if concert favorite
+        $userWaiting = $pdo->prepare(
+            "SELECT * FROM concerts_interested
+            WHERE concert_id = :concert_id AND user_id = :user_id"
+        );
+
+        $userWaiting->bindParam(':user_id', $_POST["user_id"]);
+        $userWaiting->bindParam(':concert_id', $_POST["concert_id"]);
+        $userWaiting->execute();
+
+        $tab->{'favorite'} = $userWaiting->rowCount() == 1;
+
+        // check if user is on waiting list
         $userWaiting = $pdo->prepare(
             "SELECT * FROM concerts_waiting
             WHERE concert_id = :concert_id AND user_id = :user_id"

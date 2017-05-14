@@ -16,14 +16,28 @@ if(isset($_POST["user_id"]) && $_POST["user_id"]){
 
         $res = $user->fetchAll(PDO::FETCH_ASSOC)[0];
 
+        // user tags
+        $tags = $pdo->prepare(
+            "SELECT category_id, alias
+             FROM users_categories
+             INNER JOIN categories
+             ON users_categories.category_id = categories.eventful_id
+             WHERE users_categories.user_id=:user_id"
+        );
+        $tags->bindParam(":user_id", $_POST['user_id']);
+        $tags->execute();
+
+        $res['user_tags'] = $tags->fetchAll(PDO::FETCH_ASSOC);
+
         // concerts_interested
         $interested = $pdo->prepare(
             "SELECT
                 concerts.eventful_id, concerts.title,       concerts.artist_name,
                 concerts.city_name,   concerts.region_name, concerts.thumb
-             FROM concerts_interested WHERE concerts_interested.user_id=:user_id
-             LEFT JOIN concerts
-             ON concerts_interested.concert_id = concerts.id"
+             FROM concerts_interested
+             INNER JOIN concerts
+             ON concerts_interested.concert_id = concerts.id
+             WHERE concerts_interested.user_id=:user_id"
         );
         $interested->bindParam(":user_id", $_POST['user_id']);
         $interested->execute();
@@ -35,9 +49,10 @@ if(isset($_POST["user_id"]) && $_POST["user_id"]){
             "SELECT
                 concerts.eventful_id, concerts.title,       concerts.artist_name,
                 concerts.city_name,   concerts.region_name, concerts.thumb
-             FROM concerts_participate WHERE concerts_participate.user_id=:user_id
-             LEFT JOIN concerts
-             ON concerts_participate.concert_id = concerts.id"
+             FROM concerts_participate
+             INNER JOIN concerts
+             ON concerts_participate.concert_id = concerts.id
+             WHERE concerts_participate.user_id=:user_id"
         );
         $participate->bindParam(":user_id", $_POST['user_id']);
         $participate->execute();
@@ -47,9 +62,10 @@ if(isset($_POST["user_id"]) && $_POST["user_id"]){
         // artists fan
         $artists = $pdo->prepare(
             "SELECT artists.eventful_id, artists.name, artists.thumb,
-             FROM artists_fans WHERE artists_fans.user_id=:user_id
-             LEFT JOIN artists
-             ON artists_fans.artist_id = artists.id"
+             FROM artists_fans
+             INNER JOIN artists
+             ON artists_fans.artist_id = artists.id
+             WHERE artists_fans.user_id=:user_id"
         );
         $artists->bindParam(":user_id", $_POST['user_id']);
         $artists->execute();
@@ -59,9 +75,10 @@ if(isset($_POST["user_id"]) && $_POST["user_id"]){
         // open groups
         $groups = $pdo->prepare(
             "SELECT msg_conv.id, msg_conv.name, msg_conv.concert_id
-             FROM msg_conv_users WHERE msg_conv_users.user_id=:user_id
-             LEFT JOIN msg_conv
-             ON msg_conv_users.conv_id = msg_conv.id"
+             FROM msg_conv_users
+             INNER JOIN msg_conv
+             ON msg_conv_users.conv_id = msg_conv.id
+             WHERE msg_conv_users.user_id=:user_id"
         );
         $groups->bindParam(":user_id", $_POST['user_id']);
         $groups->execute();
@@ -71,9 +88,10 @@ if(isset($_POST["user_id"]) && $_POST["user_id"]){
         // groups members
         $members = $pdo->prepare(
             "SELECT users.id, users.login, users.avatar
-             FROM msg_conv_users WHERE msg_conv_users.conv_id=:conv_id
-             LEFT JOIN users
-             ON msg_conv_users.user_id = users.id"
+             FROM msg_conv_users
+             INNER JOIN users
+             ON msg_conv_users.user_id = users.id
+             WHERE msg_conv_users.conv_id=:conv_id"
         );
 
         foreach($res['open_groups'] as $group){

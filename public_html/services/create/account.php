@@ -27,8 +27,8 @@ if(
 
         if(!$array){
             $add = $pdo->prepare(
-                "INSERT INTO users (login, email, password, prenom)
-                 VALUES(:login, :email, :password, :prenom)"
+                "INSERT INTO users (login, email, password, prenom, avatar)
+                 VALUES(:login, :email, :password, :prenom, 'http://diese.pe.hu/avatar/default-image-profile.jpg')"
             );
 
             foreach($_POST as $k=>&$v)
