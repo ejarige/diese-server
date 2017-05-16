@@ -49,7 +49,7 @@ if(isset($_POST["concert_id"]) && $_POST["concert_id"]
         // get waiting list
         $allWaiting = $pdo->prepare(
             "SELECT users.id, users.login, users.avatar FROM concerts_waiting
-            LEFT JOIN users
+            INNER JOIN users
             ON concerts_waiting.user_id = users.id
             WHERE concerts_waiting.concert_id = :concert_id
             AND concerts_waiting.user_id <> :user_id"
@@ -63,20 +63,22 @@ if(isset($_POST["concert_id"]) && $_POST["concert_id"]
 
         // get friends waiting
         $friendWaiting = $pdo->prepare(
-            "SELECT users.id, users.login, users.avatar FROM concerts_waiting
-            LEFT JOIN users_friends
-            ON concerts_waiting.user_id = users_friends.user1_id
-            LEFT JOIN users
-            ON concerts_waiting.user_id = users.id
-            WHERE concerts_waiting.concert_id = :concert_id
+            "SELECT users.id, users.login, users.avatar
+            FROM concerts_participants
+            INNER JOIN users_friends
+            ON concerts_participants.user_id = users_friends.user1_id
+            INNER JOIN users
+            ON concerts_participants.user_id = users.id
+            WHERE concerts_participants.concert_id = :concert_id
             AND users_friends.user2_id = :user_id
             UNION
-            SELECT users.id, users.login, users.avatar FROM concerts_waiting
-            LEFT JOIN users_friends
-            ON concerts_waiting.user_id = users_friends.user2_id
-            LEFT JOIN users
-            ON concerts_waiting.user_id = users.id
-            WHERE concerts_waiting.concert_id = :concert_id
+            SELECT users.id, users.login, users.avatar
+            FROM concerts_participants
+            INNER JOIN users_friends
+            ON concerts_participants.user_id = users_friends.user2_id
+            INNER JOIN users
+            ON concerts_participants.user_id = users.id
+            WHERE concerts_participants.concert_id = :concert_id
             AND users_friends.user1_id = :user_id"
         );
 

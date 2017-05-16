@@ -21,6 +21,20 @@ if(
 
         $res = $msg->fetchAll(PDO::FETCH_ASSOC);
 
+        // get conv is open
+
+        $open = $pdo->prepare(
+            "SELECT open FROM msg_conv WHERE id=:conv_id"
+        );
+
+        $open->bindParam(':conv_id', $_POST["conv_id"]);
+        $open->execute();
+
+        $resconv = $open->fetchAll(PDO::FETCH_ASSOC);
+
+        $res['open']        = $resconv[0]['open'];
+        $res['concert_id']  = $resconv[0]['concert_id'];
+
         http_response_code(200);
         echo json_encode($res, JSON_UNESCAPED_UNICODE);
 
