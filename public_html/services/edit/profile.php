@@ -56,7 +56,7 @@ if(
         // add tags
         $categories = explode(',', $_POST['categories']);
         if($categories){
-            $tags = $pdo->prepare('INSERT INTO users_categories VALUES :userid, :category');
+            $tags = $pdo->prepare('INSERT INTO users_categories VALUES (:userid, :category)');
 
             foreach($categories as $cat){
                 $tags->execute(array(
