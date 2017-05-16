@@ -10,7 +10,7 @@ if(
 
         // conversations
         $convs = $pdo->prepare(
-            "SELECT msg_conv.id, msg_conv.concert_id, msg_conv.open, msg_conv.name
+            "SELECT msg_conv.id, msg_conv.concert_id, msg_conv.open, msg_conv.name, msg_conv.open
              FROM msg_conv_users
              INNER JOIN msg_conv ON msg_conv.id = msg_conv_users.conv_id
              AND msg_conv_users.user_id = :user_id"
@@ -49,12 +49,13 @@ if(
         http_response_code(200);
         echo json_encode($res, JSON_UNESCAPED_UNICODE );
 
+        http_response_code(200);
+
     } catch (Exception $e) {
         http_response_code(503);
         echo $e;
     }
 
-    http_response_code(200);
 } else {
     http_response_code(400);
 }

@@ -103,11 +103,11 @@ try {
         }
     }
 
+    http_response_code(200);
+    echo $tab->events->event != null ? $res : '[]';
+
 } catch (PDOException $e) {
     http_response_code(503);
 }
-
-http_response_code(200);
-echo $tab->events->event != null ? $res : '[]';
 
 		
